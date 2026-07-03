@@ -106,12 +106,12 @@ export const PHASES = [
           <div class="easel-legs"></div>
           <div class="easel-canvas-area">
             <div class="carousel-container">
-              <img src="assets/fotos/artes/1783025277689.jpg" class="carousel-img active">
-              <img src="assets/fotos/artes/1783025277734.jpg" class="carousel-img">
-              <img src="assets/fotos/artes/1783025277769.jpg" class="carousel-img">
-              <img src="assets/fotos/artes/1783025277862.jpg" class="carousel-img">
-              <img src="assets/fotos/artes/1783025277892.jpg" class="carousel-img">
-              <img src="assets/fotos/artes/1783025277923.jpg" class="carousel-img">
+              <img src="assets/fotos/Artes/1783025277689.jpg" class="carousel-img active">
+              <img src="assets/fotos/Artes/1783025277734.jpg" class="carousel-img">
+              <img src="assets/fotos/Artes/1783025277769.jpg" class="carousel-img">
+              <img src="assets/fotos/Artes/1783025277862.jpg" class="carousel-img">
+              <img src="assets/fotos/Artes/1783025277892.jpg" class="carousel-img">
+              <img src="assets/fotos/Artes/1783025277923.jpg" class="carousel-img">
             </div>
             <button class="carousel-btn prev-btn" type="button">&#10094;</button>
             <button class="carousel-btn next-btn" type="button">&#10095;</button>
