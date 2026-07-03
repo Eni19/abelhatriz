@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de hash — Floriografia (uso interno)</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    max-width: 640px;
+    margin: 60px auto;
+    padding: 0 20px;
+    color: #2b2420;
+    background: #f6efe4;
+  }
+  h1 { font-size: 1.3rem; }
+  p.note { color: #5a5048; font-size: 0.9rem; }
+  input, button {
+    font-size: 1rem;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc2b4;
+  }
+  input { width: 100%; box-sizing: border-box; margin-bottom: 12px; }
+  button {
+    background: #33422f;
+    color: #fdf9f2;
+    border: none;
+    cursor: pointer;
+  }
+  output {
+    display: block;
+    margin-top: 20px;
+    padding: 14px;
+    background: #fff;
+    border-radius: 8px;
+    word-break: break-all;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+  <h1>Gerador de hash de resposta</h1>
+  <p class="note">
+    Ferramenta interna para uso do desenvolvedor — não faz parte do jogo.
+    Digite a resposta correta de uma fase, copie o hash gerado, e cole no
+    campo <code>answerHash</code> daquela fase em <code>js/phases.js</code>.
+    A resposta em texto puro nunca deve ir para esse arquivo.
+  </p>
+
+  <input id="answer" type="text" placeholder="Digite a resposta da fase..." autocomplete="off" />
+  <button id="generate">Gerar hash SHA-256</button>
+
+  <output id="result"></output>
+
+  <script>
+    // Must match normalize() in js/validation.js exactly, or the hash won't match at runtime.
+    function normalize(text) {
+      return text
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(new RegExp("[\\u0300-\\u036f]", "g"), "")
+        .replace(/[-\s]/g, "");
+    }
+
+    async function sha256Hex(text) {
+      const bytes = new TextEncoder().encode(normalize(text));
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    document.getElementById("generate").addEventListener("click", async () => {
+      const value = document.getElementById("answer").value;
+      const result = document.getElementById("result");
+      if (!value.trim()) {
+        result.textContent = "Digite uma resposta primeiro.";
+        return;
+      }
+      result.textContent = await sha256Hex(value);
+    });
+
+    document.getElementById("answer").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("generate").click();
+    });
+  </script>
+</body>
+</html>

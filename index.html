@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floriografia — um jogo para você</title>
+  <meta name="description" content="Um jogo de mistério e memórias, escrito na linguagem das flores.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Great+Vibes&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Background: soft painterly dusk/meadow gradient, sets the storybook mood behind everything -->
+  <div class="scene-bg" aria-hidden="true"></div>
+
+  <!-- Fireflies: drifting glow dots, running the whole time for a forest-at-dusk feel -->
+  <div class="fireflies" aria-hidden="true">
+    <div class="firefly" style="left:6%; --drift:30px; animation-duration:14s,3.2s; animation-delay:0s,0s;"></div>
+    <div class="firefly" style="left:16%; --drift:-25px; animation-duration:18s,2.6s; animation-delay:2s,0.4s;"></div>
+    <div class="firefly" style="left:28%; --drift:40px; animation-duration:15s,3.8s; animation-delay:5s,1.1s;"></div>
+    <div class="firefly" style="left:41%; --drift:-35px; animation-duration:20s,2.9s; animation-delay:1s,0.7s;"></div>
+    <div class="firefly" style="left:55%; --drift:20px; animation-duration:16s,3.4s; animation-delay:7s,1.6s;"></div>
+    <div class="firefly" style="left:67%; --drift:-45px; animation-duration:19s,3s; animation-delay:3s,0.2s;"></div>
+    <div class="firefly" style="left:78%; --drift:35px; animation-duration:14s,2.7s; animation-delay:6s,1.3s;"></div>
+    <div class="firefly" style="left:88%; --drift:-20px; animation-duration:17s,3.6s; animation-delay:4s,0.9s;"></div>
+    <div class="firefly" style="left:95%; --drift:25px; animation-duration:21s,3.1s; animation-delay:8s,1.8s;"></div>
+    <div class="firefly" style="left:35%; --drift:-15px; animation-duration:22s,2.5s; animation-delay:9.5s,0.5s;"></div>
+  </div>
+
+  <div class="intro" id="intro" hidden>
+    <!-- Imagens laterais formando a estética (somente girassóis) -->
+    <img src="lateral_girassois.png" class="intro-lateral intro-lateral--left" alt="">
+    <img src="lateral_girassois.png" class="intro-lateral intro-lateral--right" alt="">
+
+    <div class="intro__card">
+      <!-- Vinhas geradas proceduralmente por js/vine-art.js (paintVines()),
+           crescendo sobre o card via GSAP em main.js. -->
+      <svg class="intro-vine-corner intro-vine-tl" viewBox="0 0 200 200" fill="none"></svg>
+      <svg class="intro-vine-corner intro-vine-br" viewBox="0 0 200 200" fill="none"></svg>
+
+      <h2 class="intro__title" id="intro-title">Feliz Aniversário Biaaaaaaaaa!!!</h2>
+      <p>20 anos, caramba! Quer dizer...vamos falar pros outros que é 19... todos os anos... a partir de
+        agora...<br>enfim!</p>
+      <p>Como é um dia especial, eu quis fazer algo especial! Eu não sei desenhar e fazer coisas lindas como você, mas
+        eu acho que consigo fazer algo no mínimo divertido!</p>
+      <p>Então, essa é a segunda parte do meu presente, um Enigma pra você, e só você, resolver!</p>
+      <p>Se você está aqui, você já tem o livro em mãos, Floriografia. Eu recomendaria que você não perdesse ele de
+        vista porque você vai precisar.</p>
+      <p>8 mistérios para você resolver e chegar na 3º Parte do presente. Simples né?<br>Cada enigma tem só uma
+        resposta, basta que você encontre ela e siga em frente.</p>
+      <button class="phase-form__submit" id="intro-start-btn" style="margin-top: 24px;">Vamos começar?</button>
+    </div>
+  </div>
+
+  <!-- Vinhas geradas proceduralmente por js/vine-art.js (paintVines()) — cada
+       svg recebe seu conteúdo via JS, mantendo os mesmos viewBox/posições
+       CSS de antes. -->
+  <div class="nature-layer" aria-hidden="true" id="nature-layer" hidden>
+    <svg class="nature-branch nature-branch--tl" viewBox="0 0 300 400" fill="none"></svg>
+    <svg class="nature-branch nature-branch--br" viewBox="0 0 300 400" fill="none"></svg>
+    <svg class="nature-branch nature-branch--tr" viewBox="0 0 200 300" fill="none"></svg>
+    <svg class="nature-branch nature-branch--ml" viewBox="0 0 300 500" fill="none"></svg>
+    <svg class="nature-branch nature-branch--mr" viewBox="0 0 300 500" fill="none"></svg>
+    <svg class="nature-branch nature-branch--bl" viewBox="0 0 200 300" fill="none"></svg>
+  </div>
+
+  <main class="app" id="app" hidden>
+
+    <!-- ===================== HEADER / HERO ===================== -->
+    <header class="hero" id="hero">
+      <p class="hero__eyebrow">um jogo de memórias e flores</p>
+      <h1 class="hero__title">Floriografia</h1>
+      <p class="hero__subtitle" id="hero-subtitle">
+        Cada flor guarda um significado. Cada fase, uma lembrança.
+      </p>
+    </header>
+
+    <!-- ===================== INVENTORY / BOUQUET BAR ===================== -->
+    <!-- Fills up with one flower per phase solved. Click a collected flower to see its meaning. -->
+    <section class="bouquet" id="bouquet" aria-label="Seu buquê">
+      <div class="bouquet__inner">
+        <span class="bouquet__label">seu buquê</span>
+        <ol class="bouquet__slots" id="bouquet-slots"><!-- rendered by inventory.js --></ol>
+      </div>
+    </section>
+
+    <!-- ===================== PHASE TEMPLATE ===================== -->
+    <!-- This whole <main> is re-rendered per phase by main.js using the template below. -->
+    <main class="phase" id="phase-root" aria-live="polite">
+      <!-- content injected by js/main.js -->
+    </main>
+
+    <!-- ===================== FINAL / CLOSING SCREEN ===================== -->
+    <section class="finale" id="finale" hidden>
+      <h2 class="finale__title">O buquê está completo.</h2>
+      <p class="finale__text" id="finale-text">
+        <!-- Personalize this closing message in js/phases.js -> FINALE_MESSAGE -->
+      </p>
+    </section>
+
+    </div>
+
+    <!-- Flower-meaning popup, shared by all collected bouquet slots -->
+    <div class="flower-popup" id="flower-popup" hidden role="dialog" aria-modal="true"
+      aria-labelledby="flower-popup-title">
+      <div class="flower-popup__card">
+        <button class="flower-popup__close" id="flower-popup-close" aria-label="Fechar">×</button>
+        <div class="flower-popup__media" id="flower-popup-media"></div>
+        <h3 class="flower-popup__title" id="flower-popup-title"></h3>
+        <p class="flower-popup__meaning" id="flower-popup-meaning"></p>
+        <button class="phase-form__submit flower-popup__revisit" id="flower-popup-revisit">Revisitar esta fase</button>
+      </div>
+    </div>
+
+    <!-- Phase Complete Popup -->
+    <div class="flower-popup phase-complete-popup" id="phase-complete-popup" hidden role="dialog" aria-modal="true"
+      aria-labelledby="phase-complete-title">
+      <div class="flower-popup__card">
+        <h3 class="flower-popup__title" id="phase-complete-title"></h3>
+        <div class="phase-complete-media" id="phase-complete-media"></div>
+        <p class="flower-popup__meaning" id="phase-complete-meaning"></p>
+        <p class="phase-complete-message" id="phase-complete-message"
+          style="margin-top: 16px; color: var(--color-ink); font-style: normal; white-space: pre-line;"></p>
+        <button class="phase-form__submit flower-popup__revisit" id="phase-complete-next" style="margin-top: 24px;">Ir
+          para a próxima fase</button>
+      </div>
+    </div>
+
+    <script type="module" src="js/main.js?v=2"></script>
+</body>
+
+</html>
